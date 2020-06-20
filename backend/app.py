@@ -99,12 +99,12 @@ def submit_turn():
             item1del = 600
         else:
             item1del= 0
-            print('hello')
-            print(session["mobile_a"])
-            print(type1)
-            print(secs1)
-            session["delay1"] = mobiledata[session["mobile_a"]][type1] + secs1*mobiledata[session["mobile_a"]]["persec"] + item1del
-            session["delay2"] =session["delay2"]- session["delay1"]
+        print('hello')
+        print(session["mobile_a"])
+        print(type1)
+        print(secs1)
+        session["delay1"] = mobiledata[session["mobile_a"]][type1] + secs1*mobiledata[session["mobile_a"]]["persec"] + item1del
+        session["delay2"] = session["delay2"]- session["delay1"]
 
 
     ## logic to update delay for mob1 goes here
