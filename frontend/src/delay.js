@@ -24,6 +24,7 @@ function DelayPage() {
   const [shotTimeA, setShotTimeA] = useState(0);
   const [shotTimeB, setShotTimeB] = useState(0);
   const [showAlert,setAlert] = useState(false);
+  const [turnCounter,setTurn] = useState();
 
   const shotRef = {
     '1':"shot1",
@@ -50,8 +51,11 @@ function DelayPage() {
       headers: { 'Content-Type': 'application/json'},
       body: JSON.stringify({"mobileA": mobileA , "mobileB": mobileB } )
     };
-    fetch('/api/match',requestOptions).then((res)=>res.json()).then((data) => setPlayer(data.currentPlayer))
-    setAlert(true)
+    fetch('/api/match',requestOptions).then((res)=>res.json()).then((data) => {
+    setPlayer(data.currentPlayer);
+    setTurn(data.turnCounter);
+  })
+    setAlert(true);
   };
 
   function handleReset() {
@@ -62,11 +66,12 @@ function DelayPage() {
     setShotTimeA(0)
     setShotTimeB(0)
     setshotValueA('1')
-    setshotValueB('B')
+    setshotValueB('1')
     setItemCountA(3)
     setItemCountB(3)
     setDelayA(0)
     setDelayB(0)
+    setTurn()
   })
   };
 
@@ -80,6 +85,7 @@ function DelayPage() {
     setPlayer(data.currentPlayer)
     setDelayA(data.delay1)
     setDelayB(data.delay2)
+    setTurn(data.turnCounter)
   })
 
     // reset item boolean
@@ -98,6 +104,7 @@ function DelayPage() {
     setPlayer(data.currentPlayer)
     setDelayA(data.delay1)
     setDelayB(data.delay2)
+    setTurn(data.turnCounter)
   })
 
     // reset item boolean
@@ -124,6 +131,19 @@ function DelayPage() {
     setItemClickB(true);
   };
 
+  function renderTurn() {
+    if (turnCounter % 2 == 0) {
+      return (
+        <h2>Turn {turnCounter/2}</h2>
+      )
+
+    } else {
+      return (
+        <h2>Turn {Math.round(turnCounter - turnCounter/2)}</h2>
+      )
+    }
+  }
+
   return (
     <div className="App">
       <Navigation />
@@ -139,7 +159,6 @@ function DelayPage() {
             <h1 className="delay-text">Side A</h1>
 
             <Jumbotron style={{backgroundColor:"#1c1f24"}}>
-            {currentPlayer==='mobileA' ?<Spinner animation="grow" variant="danger"/>: <></>}
               <h1><span className="delay-text">{delayA}</span></h1>
 
                 {(mobileB && mobileA) ?
@@ -229,9 +248,15 @@ function DelayPage() {
               {/* Submit button*/}
               <Row>
               <br />
-                <Col></Col>
-                <Col>{currentPlayer==="mobileA" ? <Button variant="success" onClick={handleSubmitA}>Submit</Button>: <Button variant="success" disabled>Submit</Button>}</Col>
-                <Col></Col>
+                <Col>
+                </Col>
+                <Col>
+                {currentPlayer==="mobileA" ? <Button variant="success" onClick={handleSubmitA}>Submit</Button>
+                : <Button variant="success" disabled>Submit</Button>}
+                </Col>
+                <Col>
+                {currentPlayer==='mobileA' ?<Spinner animation="grow" variant="danger"/>: <></>}
+                </Col>
               </Row>
           </Jumbotron>
           </Col>
@@ -242,9 +267,12 @@ function DelayPage() {
           {(mobileB && mobileA) ? <Button variant="success" size="lg" onClick={initMatch}>Start</Button>:<Button variant="success" size="lg" disabled>Start</Button>}
           <Button   variant="secondary" size="lg" onClick={handleReset}>Reset</Button>
 
-          <br />
-          <br />
+          {/*<br />
+          <br />*/}
+
            {/*Notification Window */}
+           
+           {/*
           <Toast
           style={{
           backgroundColor:"#e2ecff"}}>
@@ -254,7 +282,46 @@ function DelayPage() {
               <small>Turn 4</small>
             </Toast.Header>
             <Toast.Body style={{color:"#1c1f24"}}>Fire Shot 1 in 5 seconds and you'll get to go again!</Toast.Body>
-          </Toast>
+          </Toast>*/}
+
+          <br />
+          <br />
+          {/*Turn Counter*/}
+          {turnCounter ? <h2>Turn {Math.round(turnCounter)}</h2>:<></>}
+          <Table striped bordered hover variant="dark">
+            <thead>
+              <tr>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+            {delayA < delayB ?
+              <>
+                <tr>
+                <td><b>{mobileA}</b></td>
+                <td><b>{delayA}</b></td>
+                </tr>
+                <tr>
+                <td>{mobileB}</td>
+                <td>+{delayB}</td>
+                </tr>
+              </>
+              :
+              <>
+                <tr>
+                <td><b>{mobileB}</b></td>
+                <td><b>{delayB}</b></td>
+                </tr>
+                <tr>
+                <td>{mobileA}</td>
+                <td>{delayA}</td>
+                </tr>
+              </>
+            }
+
+            </tbody>
+          </Table>
           </Col>
 
           {/* Side B Column */}
@@ -263,8 +330,6 @@ function DelayPage() {
           <h1 className="delay-text">Side B</h1>
 
           <Jumbotron style={{backgroundColor:"#1c1f24"}}>
-          {currentPlayer==='mobileB' ?<Spinner animation="grow" variant="danger" />: <></>}
-
           <h1><span className="delay-text">{delayB}</span></h1>
 
           {(mobileB && mobileA) ?
@@ -353,7 +418,10 @@ function DelayPage() {
           <br />
           <Col></Col>
           <Col>{currentPlayer==="mobileB" ? <Button variant="success" onClick={handleSubmitB}>Submit</Button>: <Button variant="success" disabled>Submit</Button>}</Col>
-          <Col></Col>
+          <Col>
+          {currentPlayer==='mobileB' ?<Spinner animation="grow" variant="danger" />: <></>}
+
+          </Col>
           </Row>
           </Jumbotron>
           </Col>

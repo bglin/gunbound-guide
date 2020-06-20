@@ -45,14 +45,10 @@ def init_match():
 
     session["mobile_a"] = incoming_data["mobileA"]
     session["mobile_b"] = incoming_data["mobileB"]
+    session["turn_counter"] = 1
 
-    ##logic to set who goes first
-    ## it will always be player A
-    current_player = "mobileA"
-
-
-    #here we are returning a dictionary with keys: message and currentPlayer
-    return (jsonify(message= "Match Initiated!" ,currentPlayer= current_player))
+    #here we are returning a dictionary with keys: message and currentPlayer (MobileA will always go first)
+    return (jsonify(message= "Match Initiated!" ,currentPlayer= "mobileA",turnCounter=session["turn_counter"] ))
 
 ## when the user clicks reset this function will clear all variables
 @app.route('/api/reset', methods=["GET"])
@@ -61,6 +57,7 @@ def reset_match():
     session["mobile_b"]= ''
     session["delay1"] = 0
     session["delay2"] = 0
+    session['turn_counter']= 0
     # reldelay1 = 0
     # reldelay2 = 0
     item1del = 0
@@ -126,14 +123,15 @@ def submit_turn():
 
     print(session["delay1"])
     print(session["delay2"])
-
+    session['turn_counter']= session['turn_counter'] + 0.5
+    print(session.get('turn_counter'))
 # do i need to return anything
 ## You need to return the delay, and whose turn it is so the frontend can update the UI - Bruno
     if session["delay2"] >= 0:
         session['delay1']=0
-        return (jsonify({"currentPlayer":'mobileA',"delay1":session.get('delay1'),"delay2":session.get('delay2')})) ## not sure how we should ouput which turn it is
+        return (jsonify({"currentPlayer":'mobileA',"delay1":session.get('delay1'),"delay2":session.get('delay2'),"turnCounter":session.get("turn_counter")})) ## not sure how we should ouput which turn it is
     else:
-        return (jsonify({"currentPlayer":'mobileB',"delay1":session.get('delay1'),"delay2":session.get('delay2')})) ## not sure how we should ouput which turn it is
+        return (jsonify({"currentPlayer":'mobileB',"delay1":session.get('delay1'),"delay2":session.get('delay2'),"turnCounter":session.get("turn_counter")})) ## not sure how we should ouput which turn it is
 
 
 if __name__=="__main__":
