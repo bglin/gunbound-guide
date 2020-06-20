@@ -32,9 +32,9 @@ function DelayPage() {
   };
 
   const shotTypes =
-  [{ name: '1', value: '1' ,variant:"primary"},
-  { name: '2', value: '2',variant:"primary" },
-  { name: 'SS', value: '3' ,variant:"warning"}
+  [{ name: '1', value: '1' ,variant:"primary",index:"shot1"},
+  { name: '2', value: '2',variant:"primary",index:"shot2" },
+  { name: 'SS', value: '3' ,variant:"warning",index:"ss"}
   ];
 
   useEffect(() => {
@@ -186,7 +186,7 @@ function DelayPage() {
                       <br/>
                       {data.name}
                       <br/>
-                      <span style= {{fontSize: "10px"}}>+770</span>
+                      {mobileA ? <span style= {{fontSize: "10px"}}>+{delayData[mobileA][data.index]}</span>:<></>}
                       </ToggleButton>
                   </Col>
               ))}
@@ -310,7 +310,7 @@ function DelayPage() {
                   <br/>
                   {data.name}
                   <br/>
-                  <span style= {{fontSize: "10px"}}>+770</span>
+                {mobileB ? <span style= {{fontSize: "10px"}}>+{delayData[mobileB][data.index]}</span>:<></>}
                   </ToggleButton>
               </Col>
           ))}

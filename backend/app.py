@@ -130,6 +130,7 @@ def submit_turn():
 # do i need to return anything
 ## You need to return the delay, and whose turn it is so the frontend can update the UI - Bruno
     if session["delay2"] >= 0:
+        session['delay1']=0
         return (jsonify({"currentPlayer":'mobileA',"delay1":session.get('delay1'),"delay2":session.get('delay2')})) ## not sure how we should ouput which turn it is
     else:
         return (jsonify({"currentPlayer":'mobileB',"delay1":session.get('delay1'),"delay2":session.get('delay2')})) ## not sure how we should ouput which turn it is
