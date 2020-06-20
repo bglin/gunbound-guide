@@ -2,6 +2,14 @@
 
 ## Quick Start (MacOS)
 
+### Prerequisites
+
+```ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" ```
+ 
+ ```brew update```
+
+```brew install node```
+
 ### Backend
 
 in a terminal window run these commands:
@@ -21,12 +29,6 @@ in a terminal window run these commands:
 ### Frontend
 
 open another terminal window and run these commands: 
-
- ```ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" ```
- 
- ```brew update```
-
-```brew install node```
 
 ``` cd frontend ```
 
