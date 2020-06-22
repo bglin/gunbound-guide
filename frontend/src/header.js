@@ -12,7 +12,6 @@ function Navigation() {
     <Nav.Link> <Link to="/">Home</Link></Nav.Link>
     <Nav.Link><Link to="/delay-simulator">Delay Simulator</Link></Nav.Link>
     </Nav>
-      <Button variant="outline-light">Search</Button>
   </Navbar>
 )
 

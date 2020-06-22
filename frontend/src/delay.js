@@ -24,7 +24,10 @@ function DelayPage() {
   const [shotTimeA, setShotTimeA] = useState(0);
   const [shotTimeB, setShotTimeB] = useState(0);
   const [showAlert,setAlert] = useState(false);
-  const [turnCounter,setTurn] = useState();
+  const [turnCounter,setTurn] = useState(0);
+  const [ssLockedA,setSpecialA] = useState(false);
+  const [ssLockedB,setSpecialB] = useState(false);
+
 
   const shotRef = {
     '1':"shot1",
@@ -71,7 +74,9 @@ function DelayPage() {
     setItemCountB(3)
     setDelayA(0)
     setDelayB(0)
-    setTurn()
+    setTurn(0)
+    setSpecialA(false)
+    setSpecialB(false)
   })
   };
 
@@ -81,11 +86,19 @@ function DelayPage() {
       headers: { 'Content-Type': 'application/json'},
       body: JSON.stringify({"mobileA":mobileA,"mobileB":mobileB,"currentPlayer": currentPlayer, "shot_type": shotRef[shotValueA],"secs_to_shoot": shotTimeA,"item":itemClickA})
     }
+    console.log(ssLockedA)
     fetch('api/match/update',requestOptions).then((res)=>res.json()).then((data) => {
     setPlayer(data.currentPlayer)
     setDelayA(data.delay1)
     setDelayB(data.delay2)
     setTurn(data.turnCounter)
+    setSpecialA(data.ssLockedA)
+    setSpecialB(data.ssLockedB)
+
+    if (shotValueA==='3') {
+      setshotValueA('1')
+    }
+    console.log(ssLockedA)
   })
 
     // reset item boolean
@@ -105,6 +118,13 @@ function DelayPage() {
     setDelayA(data.delay1)
     setDelayB(data.delay2)
     setTurn(data.turnCounter)
+    setSpecialB(data.ssLockedB)
+    setSpecialA(data.ssLockedA)
+    console.log("hi")
+    console.log(ssLockedB)
+    if (shotValueB==='3') {
+      setshotValueB('1')
+    }
   })
 
     // reset item boolean
@@ -131,19 +151,6 @@ function DelayPage() {
     setItemClickB(true);
   };
 
-  function renderTurn() {
-    if (turnCounter % 2 == 0) {
-      return (
-        <h2>Turn {turnCounter/2}</h2>
-      )
-
-    } else {
-      return (
-        <h2>Turn {Math.round(turnCounter - turnCounter/2)}</h2>
-      )
-    }
-  }
-
   return (
     <div className="App">
       <Navigation />
@@ -159,7 +166,7 @@ function DelayPage() {
             <h1 className="delay-text">Side A</h1>
 
             <Jumbotron style={{backgroundColor:"#1c1f24"}}>
-              <h1><span className="delay-text">{delayA}</span></h1>
+            <h1><span className="delay-text">{delayA}</span></h1>
 
                 {(mobileB && mobileA) ?
                   <DropdownButton id="dropdown-1" title={mobileA ? mobileA : "Choose Mobile"}disabled>
@@ -201,7 +208,7 @@ function DelayPage() {
                       value={data.value}
                       checked={shotValueA===data.value}
                       onChange={(e) => setshotValueA(e.currentTarget.value)}
-                      disabled={data.value ==='3' ? true : false}>
+                      disabled={(data.value ==='3' && (turnCounter <= 3 || ssLockedA===true)) ? true : false}>
                       <br/>
                       {data.name}
                       <br/>
@@ -224,7 +231,7 @@ function DelayPage() {
                   </Button> :
 
                   <Button variant="danger" onClick={toggleItemA}>
-                  <h6>+600</h6>
+                  <h6>{mobileA==="Armor" ? <>+640</>: <>+600</>}</h6>
                     <Image src={dual} rounded/>
                   </Button>
                 }
@@ -271,7 +278,7 @@ function DelayPage() {
           <br />*/}
 
            {/*Notification Window */}
-           
+
            {/*
           <Toast
           style={{
@@ -287,7 +294,7 @@ function DelayPage() {
           <br />
           <br />
           {/*Turn Counter*/}
-          {turnCounter ? <h2>Turn {Math.round(turnCounter)}</h2>:<></>}
+          {turnCounter > 0 ? <h2>Turn {Math.round(turnCounter)}</h2>:<></>}
           <Table striped bordered hover variant="dark">
             <thead>
               <tr>
@@ -371,7 +378,7 @@ function DelayPage() {
                   value={data.value}
                   checked={shotValueB===data.value}
                   onChange={(e) => setshotValueB(e.currentTarget.value)}
-                  disabled={data.value ==='3' ? true : false}>
+                  disabled={(data.value ==='3'  && (turnCounter < 3 || ssLockedB===true)) ? true : false}>
                   <br/>
                   {data.name}
                   <br/>
@@ -388,7 +395,7 @@ function DelayPage() {
                     <Col>
                     {itemCountB === 0 || itemClickB===true || shotValueB==='3' ?
                     <Button variant="danger" disabled>
-                    <h6>+600</h6>
+                    <h6>{mobileB==="Armor" ? <>+640</>: <>+600</>}</h6>
                       <Image src={dual} rounded/>
                     </Button> :
 
@@ -457,116 +464,5 @@ function DelayPage() {
     </div>
   );
 }
-
-// function MobileCard(props) {
-//
-//   return (
-//     <>
-//     <Jumbotron style={{backgroundColor:"#1c1f24"}}>
-//     <h1><span className="delay-text">0</span></h1>
-//     {props.mobileA ?
-//     <>
-//     <DropdownButton id="dropdown-basic-button" title={props.mobileA==="None" ? "Choose Mobile": props.mobileA}>
-//       {mobiles.map((mobile,idx) => {
-//         return(
-//         <>
-//         <Dropdown.Item key={idx} as="button" onClick={() =>props.setA(mobile.name)}>{mobile.name}</Dropdown.Item>
-//         </>
-//       )}
-//     )}
-//     </DropdownButton>
-//     </> :
-//     <>
-//     <DropdownButton id="dropdown-basic-button" title={props.mobileB==="None" ? "Choose Mobile": props.mobileB}>
-//       {mobiles.map((mobile,idx) => {
-//         return(
-//         <>
-//         <Dropdown.Item key={idx} as="button" onClick={() =>props.setB(mobile.name)}>{mobile.name}</Dropdown.Item>
-//         </>
-//       )}
-//     )}
-//     </DropdownButton>
-//     </>}
-//
-//     <Figure>
-//       <Figure.Image
-//         width={150}
-//         height={160}
-//         alt="img"
-//         src={mobiles[0].img}
-//         rounded
-//       />
-//       <Figure.Caption>
-//       </Figure.Caption>
-//     </Figure>
-//
-//
-//     <Row md={3} sm={3} lg={3}>
-//         <Col>
-//             <Button variant="primary">
-//             1
-//             <br/>
-//             <span style= {{fontSize: "10px"}}>+770</span>
-//             </Button>
-//         </Col>
-//
-//         <Col>
-//             <Button variant="primary">2
-//             <br/>
-//             <span style= {{fontSize: "10px"}}>+960</span>
-//             </Button>
-//         </Col>
-//
-//         <Col>
-//             <Button variant="warning">
-//             SS
-//             <br/>
-//             <span style= {{fontSize: "10px"}}>+1320</span>
-//             </Button>
-//         </Col>
-//     </Row>
-//
-//         <br/>
-//         <Row>
-//           {[0,1,2].map((data,idx) => {
-//             return(
-//             <>
-//             <Col
-//             key={idx}>
-//             <Button variant="danger">
-//             <h6>+600</h6>
-//               <Image src={dual} rounded/>
-//             </Button>
-//             </Col>
-//             </>
-//           )}
-//         )}
-//         </Row>
-//
-//     <br />
-//
-//     <Row>
-//       <InputGroup>
-//         <FormControl
-//           placeholder="Max 20 seconds"
-//           aria-label="time"
-//           aria-describedby="basic-addon2"
-//         />
-//         <InputGroup.Text>seconds</InputGroup.Text>
-//     </InputGroup>
-//     </Row>
-//
-//     <br />
-//
-//     <Row>
-//     <br />
-//     <Col></Col>
-//     <Col><Button variant="success">Submit</Button></Col>
-//     <Col></Col>
-//     </Row>
-//     </Jumbotron>
-//     </>
-//   )
-// };
 
 export default DelayPage;

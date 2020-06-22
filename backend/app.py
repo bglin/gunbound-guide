@@ -3,7 +3,7 @@ import json
 from delaydata import mobiledata
 from config import Config
 
-app = Flask(__name__)
+app = Flask(__name__,static_folder='../frontend/build', static_url_path='/')
 app.config.from_object(Config)
 
 ##dataset example
@@ -20,7 +20,7 @@ current_player =  ''
 
 @app.route('/')
 def index():
-    return "Hello, World!"
+    return app.send_static_file('index.html')
 
 # When the app first loads, we want to hit this function to get all the mobiles delay info.
 ## The delay info will be used to populate the text on the buttons (i.e +600)
@@ -45,8 +45,10 @@ def init_match():
 
     session["mobile_a"] = incoming_data["mobileA"]
     session["mobile_b"] = incoming_data["mobileB"]
-    session["turn_counter"] = 1
+    session["turn_counter"] = 0.5
 
+    session["ss_lock_a"] = {"turn":0,"is_locked_a": False}
+    session["ss_lock_b"] = {"turn":0,"is_locked_b": False}
     #here we are returning a dictionary with keys: message and currentPlayer (MobileA will always go first)
     return (jsonify(message= "Match Initiated!" ,currentPlayer= "mobileA",turnCounter=session["turn_counter"] ))
 
@@ -96,42 +98,59 @@ def submit_turn():
             item1del = 600
         else:
             item1del= 0
-        print('hello')
-        print(session["mobile_a"])
-        print(type1)
-        print(secs1)
+
+        # print('hello')
+        # print(session["mobile_a"])
+        # print(type1)
+        # print(secs1)
         session["delay1"] = mobiledata[session["mobile_a"]][type1] + secs1*mobiledata[session["mobile_a"]]["persec"] + item1del
         session["delay2"] = session["delay2"]- session["delay1"]
 
+        if type1 == "ss":
+            session["ss_lock_a"] = {"turn":session["turn_counter"] + 4 ,"is_locked_a": True}
+            # print("test")
+            # print(session["ss_lock_a"])
 
-    ## logic to update delay for mob1 goes here
-    ## im still confused on the relative delay and if we need to update delay for both mobiles after each turn
+
 
     ##currentPlayer equals "mobileB"
     else:
         type2 = incoming_data['shot_type']
         secs2 = incoming_data["secs_to_shoot"]
         item2 = incoming_data["item"]
+
         if session["mobile_b"] == 'Armor' and item2 == True:
             item2del = 640
         elif item2 == True:
             item2del = 600
         else:
             item2del= 0
+
         session["delay2"] = session["delay2"] + mobiledata[session["mobile_b"]][type2] + secs2*mobiledata[session["mobile_b"]]["persec"] + item2del
 
+        if type2 == "ss":
+            session["ss_lock_b"] = {"turn":session["turn_counter"] + 4 ,"is_locked_b": True}
 
     print(session["delay1"])
     print(session["delay2"])
+
     session['turn_counter']= session['turn_counter'] + 0.5
-    print(session.get('turn_counter'))
-# do i need to return anything
-## You need to return the delay, and whose turn it is so the frontend can update the UI - Bruno
+
+    if ("ss_lock_a" in session) and (session.get("ss_lock_a")["turn"] == session["turn_counter"]):
+        session["ss_lock_a"]["is_locked_a"] = False
+
+    if ("ss_lock_b" in session) and (session.get("ss_lock_b")["turn"] == session["turn_counter"]):
+        session["ss_lock_b"]["is_locked_b"] = False
+
+
+    # print(session.get('turn_counter'))
+    # print(session.get('ss_lock_a'))
+
     if session["delay2"] >= 0:
         session['delay1']=0
-        return (jsonify({"currentPlayer":'mobileA',"delay1":session.get('delay1'),"delay2":session.get('delay2'),"turnCounter":session.get("turn_counter")})) ## not sure how we should ouput which turn it is
+        return (jsonify({"currentPlayer":'mobileA',"delay1":session.get('delay1'),"delay2":session.get('delay2'),"turnCounter":session.get("turn_counter"),"ssLockedA":session["ss_lock_a"]["is_locked_a"],"ssLockedB":session["ss_lock_b"]["is_locked_b"]})) ## not sure how we should ouput which turn it is
     else:
-        return (jsonify({"currentPlayer":'mobileB',"delay1":session.get('delay1'),"delay2":session.get('delay2'),"turnCounter":session.get("turn_counter")})) ## not sure how we should ouput which turn it is
+        return (jsonify({"currentPlayer":'mobileB',"delay1":session.get('delay1'),"delay2":session.get('delay2'),"turnCounter":session.get("turn_counter"),"ssLockedB":session["ss_lock_b"]["is_locked_b"],"ssLockedA":session["ss_lock_a"]["is_locked_a"]})) ## not sure how we should ouput which turn it is
 
 
 if __name__=="__main__":
