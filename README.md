@@ -1,5 +1,7 @@
 # gunbound-guide
 
+https://gunbound-test-281133.uc.r.appspot.com/
+
 ## Quick Start (MacOS)
 
 ### Prerequisites
