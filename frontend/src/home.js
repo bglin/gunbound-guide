@@ -21,7 +21,7 @@ import {Link} from "react-router-dom";
 
 
 
-function HomePage() {
+function MobilesPage() {
 
   const [show, setShow] = useState(false);
   const [currentMobile, setMobile] = useState({"name": "","img":"","desc":``,"mobile_type":"","shot_type":"", "stats":{"energy":0,"attack":0,"defense":0,"mobility":0},"natural_enemies":[]});
@@ -246,4 +246,4 @@ function HomePage() {
 };
 
 
-export default HomePage;
+export default MobilesPage;

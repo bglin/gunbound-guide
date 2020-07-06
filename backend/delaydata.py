@@ -11,4 +11,6 @@ mobiledata = {"Armor":{"base":720,"shot1":770,"shot2": 960,"ss":1320,"persec":10
 			"Lightning":{"base":700,"shot1":750,"shot2": 800,"ss":1300,"persec":10},
 			"J.D":{"base":690,"shot1":740,"shot2": 830,"ss":1290,"persec":10},
 			"Turtle":{"base":690,"shot1":740,"shot2": 890,"ss":1290,"persec":12},
-			"Grub":{"base":690,"shot1":740,"shot2": 890,"ss":1290,"persec":10}}
+			"Grub":{"base":690,"shot1":740,"shot2": 890,"ss":1290,"persec":10},
+			"Knight":{"base":0,"shot1":850,"shot2": 950,"ss":1310,"persec":10},
+			"Dragon":{"base":0,"shot1":850,"shot2": 950,"ss":1390,"persec":10}}

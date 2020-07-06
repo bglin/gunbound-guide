@@ -3,7 +3,7 @@ import json
 from delaydata import mobiledata
 from config import Config
 
-app = Flask(__name__,static_folder='../frontend/build', static_url_path='/')
+app = Flask(__name__,static_folder='./static', static_url_path='/')
 app.config.from_object(Config)
 
 ##dataset example
@@ -152,6 +152,11 @@ def submit_turn():
     else:
         return (jsonify({"currentPlayer":'mobileB',"delay1":session.get('delay1'),"delay2":session.get('delay2'),"turnCounter":session.get("turn_counter"),"ssLockedB":session["ss_lock_b"]["is_locked_b"],"ssLockedA":session["ss_lock_a"]["is_locked_a"]})) ## not sure how we should ouput which turn it is
 
+
+
+@app.route("/mobiles")
+def catch():
+    return app.send_static_file("index.html")
 
 if __name__=="__main__":
     app.run(host = '0.0.0.0')

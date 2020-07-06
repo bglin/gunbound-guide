@@ -2,8 +2,7 @@ import React, { useState,useEffect } from 'react';
 import Navigation from './header';
 import InputRange from 'react-input-range';
 import "react-input-range/lib/css/index.css";
-import {Container,Image,Figure,Row,Col,Button,Jumbotron,Dropdown,DropdownButton,Table,Toast,FormControl,Spinner,ToggleButton,Alert} from 'react-bootstrap';
-import hyper10 from './images/random-1.png'
+import {Container,Image,Figure,Row,Col,Button,Jumbotron,Dropdown,DropdownButton,Table,Toast,Spinner,ToggleButton,Alert} from 'react-bootstrap';
 import dual from './images/dual.png'
 import mobiles from './data'
 
@@ -187,8 +186,8 @@ function DelayPage() {
             {mobileA ?
             <Figure>
               <Figure.Image
-                width={150}
-                height={160}
+                width={110}
+                height={120}
                 alt="img"
                 src={mobiles[mobiles.findIndex((e) => findMobileA(e))].img}
                 rounded
@@ -357,8 +356,8 @@ function DelayPage() {
           {mobileB ?
           <Figure>
             <Figure.Image
-              width={150}
-              height={160}
+              width={110}
+              height={120}
               alt="img"
               src={mobiles[mobiles.findIndex((e) => findMobileB(e))].img}
               rounded
