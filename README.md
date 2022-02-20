@@ -1,6 +1,5 @@
 # gunbound-guide
 
-https://gunbound-test-281133.uc.r.appspot.com/
 
 ![alt title](https://github.com/bglin/gunbound-guide/blob/master/home.png)
 ## Quick Start (MacOS)
